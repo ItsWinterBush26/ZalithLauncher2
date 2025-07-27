@@ -655,4 +655,84 @@
     <string name="url_wiki_minecraft_game_release">https://minecraft.wiki/w/Java_Edition_%s</string>
     <string name="url_wiki_minecraft_game_snapshot">https://minecraft.wiki/w/Java_Edition_%s</string>
     <string name="url_mod_custom_skin_loader">https://modrinth.com/mod/customskinloader</string>
+
+    <string name="control_primary">Left Click</string>
+    <string name="control_secondary">Right Click</string>
+    <string name="control_mouse">Mouse</string>
+    <string name="control_mouseoff">Mouse: Off</string>
+    <string name="control_mouseon">Mouse: On</string>
+    <string name="customctrl_toggle">Toggleable</string>
+    <string name="customctrl_size">Size</string>
+    <string name="customctrl_mapping">Mapping</string>
+    <string name="customctrl_orientation">Orientation</string>
+    <string name="customctrl_background_color">Background Color</string>
+    <string name="customctrl_corner_radius">Corner Radius</string>
+    <string name="customctrl_stroke_width">Stroke Width</string>
+    <string name="customctrl_stroke_color">Stroke Color</string>
+    <string name="customctrl_button_opacity">Button Opacity</string>
+    <string name="customctrl_addbutton">Add Button</string>
+    <string name="customctrl_addbutton_drawer">Add Drawer</string>
+    <string name="customctrl_addbutton_joystick">Add Joystick</string>
+    <string name="customctrl_addsubbutton">Add Sub-Button</string>
+    <string name="customctrl_selectdefault">Select Default Control Layout</string>
+    <string name="customctrl_export">Save and Share</string>
+    <string name="customctrl_passthru">Mouse Passthrough</string>
+    <string name="customctrl_swipeable">Swipeable</string>
+    <string name="customctrl_forward_lock">Forward Lock</string>
+    <string name="customctrl_absolute_tracking">Force Finger Tracking</string>
+    <string name="controls_tip">Tap the gear icon to open the menu ⚙\nTap a button to customize: edit, resize, delete, or remap</string>
+    <string name="controls_add_control_button">Button</string>
+    <string name="controls_add_control_drawer">Drawer</string>
+    <string name="controls_visibility">Visibility</string>
+    <string name="controls_in_game">In-Game</string>
+    <string name="controls_in_menu">In-Menu</string>
+    <string name="controls_orientation_up">Up</string>
+    <string name="controls_orientation_down">Down</string>
+    <string name="controls_orientation_left">Left</string>
+    <string name="controls_orientation_right">Right</string>
+    <string name="controls_orientation_free">Free</string>
+    <string name="controls_load_failed">Load Failed!</string>
+    <string name="controls_unsupported_layout_version">Unsupported control layout version!</string>
+    <string name="controls_create_new">Create New Control Layout</string>
+    <string name="controls_import_control">Import Control Layout</string>
+    <string name="controls_settings_button_snapping">Button Snapping</string>
+    <string name="controls_settings_button_snapping_distance">Button Snapping Distance</string>
+    <string name="controls_info_file_name">File Name:</string>
+    <string name="controls_info_name">Layout Name:</string>
+    <string name="controls_info_version">Layout Version:</string>
+    <string name="controls_info_author">Author:</string>
+    <string name="controls_info_desc">Description:</string>
+    <string name="controls_info_more">More Info</string>
+    <string name="controls_info_view">View Info</string>
+    <string name="controls_info_no_info">This control layout has no description…</string>
+    <string name="controls_info_invalid">Invalid File:</string>
+    <string name="controls_info_default_title">Default Control Layout</string>
+    <string name="controls_info_default_desc">This is the default control layout file. Click to manipulate this layout.</string>
+    <string name="controls_set_default_message">Are you sure you want to set this control layout as the default?</string>
+    <string name="controls_nothing">There are no control layouts here. Restarting the app will generate a new default layout.</string>
+    <string name="controls_tip_set_default">Long press the control layout to set it as the default control layout!</string>
+    <string name="replacement_customcontrol">Replace Control Layout</string>
+    <string name="custom_control_title">Manage Control Layouts</string>
+    <string name="controller_button_a" translatable="false">A</string>
+    <string name="controller_button_b" translatable="false">B</string>
+    <string name="controller_button_x" translatable="false">X</string>
+    <string name="controller_button_y" translatable="false">Y</string>
+    <string name="controller_button_start">Start</string>
+    <string name="controller_button_trigger_left">Left Trigger</string>
+    <string name="controller_button_trigger_right">Right Trigger</string>
+    <string name="controller_button_shoulder_left">Left Shoulder</string>
+    <string name="controller_button_shoulder_right">Right Shoulder</string>
+    <string name="controller_direction_forward">Joystick Up</string>
+    <string name="controller_direction_backward">Joystick Down</string>
+    <string name="controller_direction_left">Joystick Left</string>
+    <string name="controller_direction_right">Joystick Right</string>
+    <string name="controller_stick_press_l">Left Stick (Press)</string>
+    <string name="controller_stick_press_r">Right Stick (Press)</string>
+    <string name="controller_dpad_up">D-Pad Up</string>
+    <string name="controller_dpad_down">D-Pad Down</string>
+    <string name="controller_dpad_left">D-Pad Left</string>
+    <string name="controller_dpad_right">D-Pad Right</string>
+    <string name="controller_remapper_operating_mode">Current Mode</string>
+    <string name="controller_remapper_expand_entry">Expand to change key code</string>
+    
 </resources>
