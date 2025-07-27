@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    
     <string name="generic_cancel">Cancel</string>
     <string name="generic_confirm">Confirm</string>
     <string name="generic_error">Error</string>
@@ -734,5 +735,21 @@
     <string name="controller_dpad_right">D-Pad Right</string>
     <string name="controller_remapper_operating_mode">Current Mode</string>
     <string name="controller_remapper_expand_entry">Expand to change key code</string>
-    
+
+    <string name="option_category_debug">Debug</string>
+    <string name="option_category_control">Control</string>
+    <string name="option_category_hotbar">Hotbar Detection Box</string>
+    <string name="option_force_close">Force Close</string>
+    <string name="option_log_out">Log Output</string>
+    <string name="option_send_custom_key">Send Custom Key Code</string>
+    <string name="option_edit_controls">Edit Control Layout</string>
+    <string name="option_hotbar_type">Hotbar Detection Mode</string>
+    <string name="option_hotbar_type_auto">Adaptive (may be inaccurate)</string>
+    <string name="option_hotbar_type_manually">Manual Adjustment</string>
+    <string name="option_hotbar_width">Detection Box Width</string>
+    <string name="option_hotbar_height">Detection Box Height</string>
+    <string name="customctrl_editor_exit_title">Exit?</string>
+    <string name="customctrl_editor_exit_msg">The current modifications will not be saved. Are you sure you want to exit directly?</string>
+    <string name="customctrl_editor_exit">Exit Editor</string>
+    <string name="global_save_and_exit">Save and Exit</string>
 </resources>
