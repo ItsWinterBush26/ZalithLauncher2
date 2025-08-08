@@ -9,7 +9,6 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.ksp.plugin) apply false
     kotlin("plugin.serialization") version libs.versions.kotlin apply false
-    id("com.android.application")
     id("org.jetbrains.kotlin.android") version "2.0.21"
 }
 
