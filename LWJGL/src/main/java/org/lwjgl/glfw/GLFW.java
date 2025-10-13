@@ -1004,33 +1004,30 @@ public class GLFW
     }
 
     private static long mglfwCreateWindow(int width, int height, CharSequence title, long monitor, long share) {
-        // Create an ACTUAL EGL context
-        long ptr = nglfwCreateContext(share);
-        //nativeEglMakeCurrent(ptr);
-        GLFWWindowProperties win = new GLFWWindowProperties();
-        // win.width = width;
-        // win.height = height;
+    // Create an ACTUAL EGL context
+    long ptr = nglfwCreateContext(share);
+    GLFWWindowProperties win = new GLFWWindowProperties();
+    
+    win.width = mGLFWWindowWidth;
+    win.height = mGLFWWindowHeight;
+    win.title = title;
 
-        win.width = mGLFWWindowWidth;
-        win.height = mGLFWWindowHeight;
-        win.title = title;
+    win.windowAttribs.put(GLFW_HOVERED, 1);
+    win.windowAttribs.put(GLFW_VISIBLE, 1);
 
-        win.windowAttribs.put(GLFW_HOVERED, 1);
-        win.windowAttribs.put(GLFW_VISIBLE, 1);
+    mGLFWWindowMap.put(ptr, win);
+    mainContext = ptr;
 
-        mGLFWWindowMap.put(ptr, win);
-        mainContext = ptr;
+    // Initialize ImGui for this window
+    ImGuiIntegration.initializeImGuiForWindow(ptr);
 
-        if(mGLFWWindowVisibleOnCreation || monitor != 0) {
-            // Show window by default if GLFW_VISIBLE hint is specified on creation or
-            // if the monitor is nonnull (fullscreen requested)
-            glfwShowWindow(ptr);
-        }
-
-        return ptr;
-        //Return our context
+    if(mGLFWWindowVisibleOnCreation || monitor != 0) {
+        glfwShowWindow(ptr);
     }
 
+    return ptr;
+	}
+	
     public static void glfwDestroyWindow(long window) {
         // Check window exists
         try {
@@ -1114,20 +1111,28 @@ public class GLFW
     public static void glfwSetWindowIcon(@NativeType("GLFWwindow *") long window, @Nullable @NativeType("GLFWimage const *") GLFWImage.Buffer images) {}
 
     public static void glfwPollEvents() {
-        if (!mGLFWIsInputReady) {
-            mGLFWIsInputReady = true;
-            CallbackBridge.nativeSetInputReady(true);
-        }
-        // During interactions with UI elements, Minecraft likes to update the screen as events related to those inputs arrive.
-        // This leads to calls to glfwPollEvents within glfwPollEvents, which is not good for our queue system.
-        // Prevent these with this code.
-        if(mGLFWInputPumping) return;
-        mGLFWInputPumping = true;
+    public static void glfwPollEvents() {
+    if (!mGLFWIsInputReady) {
+        mGLFWIsInputReady = true;
+        CallbackBridge.nativeSetInputReady(true);
+    }
+    
+    if (mGLFWInputPumping) return;
+    mGLFWInputPumping = true;
+    
+    try {
+        // Update ImGui state at the start of frame
+        ImGuiIntegration.updateImGui();
+        
         callV(Functions.StartPumping);
-        for (Long ptr : mGLFWWindowMap.keySet()) callJV(ptr, Functions.PumpEvents);
+        for (Long ptr : mGLFWWindowMap.keySet()) {
+            callJV(ptr, Functions.PumpEvents);
+        }
         callV(Functions.StopPumping);
+    } finally {
         mGLFWInputPumping = false;
     }
+	}
 
     public static void internalWindowSizeChanged(long window, int w, int h) {
         try {
@@ -1185,15 +1190,35 @@ public class GLFW
     }
 
     public static int glfwGetMouseButton(@NativeType("GLFWwindow *") long window, int button) {
-        return mouseDownBuffer.get(button);
+    // Get actual mouse state from CallbackBridge
+    if (CallbackBridge != null) {
+        return CallbackBridge.getMouseButton(button);
     }
-    public static void glfwGetCursorPos(@NativeType("GLFWwindow *") long window, @Nullable @NativeType("double *") DoubleBuffer xpos, @Nullable @NativeType("double *") DoubleBuffer ypos) {
-        if (CHECKS) {
-            checkSafe(xpos, 1);
-            checkSafe(ypos, 1);
+    return mouseDownBuffer.get(button);
+	}
+	
+    /** Array version of: {@link #glfwGetCursorPos GetCursorPos} */
+    public static void glfwGetCursorPos(@NativeType("GLFWwindow *") long window, @Nullable @NativeType("double *") double[] xpos, @Nullable @NativeType("double *") double[] ypos) {
+    if (CHECKS) {
+        checkSafe(xpos, 1);
+        checkSafe(ypos, 1);
+    }
+    
+    // Get cursor position from CallbackBridge
+    if (CallbackBridge != null) {
+        double[] pos = CallbackBridge.getCursorPos();
+        if (pos != null && pos.length >= 2) {
+            xpos[0] = pos[0];
+            ypos[0] = pos[1];
+            return;
         }
-        nglfwGetCursorPos(window, xpos, ypos);
     }
+    
+    // Fallback to center of window
+    GLFWWindowProperties win = internalGetWindow(window);
+    xpos[0] = win.width / 2.0;
+    ypos[0] = win.height / 2.0;
+}
 
 
     public static native void nglfwGetCursorPos(@NativeType("GLFWwindow *") long window, @Nullable @NativeType("double *") DoubleBuffer xpos, @Nullable @NativeType("double *") DoubleBuffer ypos);
@@ -1417,14 +1442,34 @@ public class GLFW
 
 
     /** Array version of: {@link #glfwGetCursorPos GetCursorPos} */
-    public static void glfwGetCursorPos(@NativeType("GLFWwindow *") long window, @Nullable @NativeType("double *") double[] xpos, @Nullable @NativeType("double *") double[] ypos) {
-        if (CHECKS) {
-            // check(window);
-            checkSafe(xpos, 1);
-            checkSafe(ypos, 1);
-        }
-        nglfwGetCursorPosA(window, xpos, ypos);
+    public static void glfwGetCursorPos(@NativeType("GLFWwindow *") long window, @Nullable @NativeType("double *") DoubleBuffer xpos, @Nullable @NativeType("double *") DoubleBuffer ypos) {
+    if (CHECKS) {
+        checkSafe(xpos, 1);
+        checkSafe(ypos, 1);
     }
+    
+    // Get cursor position from CallbackBridge
+    if (CallbackBridge != null) {
+        double[] pos = CallbackBridge.getCursorPos();
+        if (pos != null && pos.length >= 2) {
+            xpos.put(0, pos[0]);
+            ypos.put(0, pos[1]);
+            return;
+        }
+    }
+    
+    // Fallback to center of window
+    GLFWWindowProperties win = internalGetWindow(window);
+    xpos.put(0, win.width / 2.0);
+    ypos.put(0, win.height / 2.0);
+}
+
+public static void glfwSetCursorPos(@NativeType("GLFWwindow *") long window, double xpos, double ypos) {
+    // Update cursor position through CallbackBridge
+    if (CallbackBridge != null) {
+        CallbackBridge.setCursorPos((int) xpos, (int) ypos);
+    }
+}
 
     @NativeType("int")
     public static boolean glfwExtensionSupported(@NativeType("char const *") CharSequence ext) {
