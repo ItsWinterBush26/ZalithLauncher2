@@ -5,68 +5,62 @@ import static org.lwjgl.glfw.GLFW.*;
 public class ImGuiIntegration {
     
     private static boolean imGuiInitialized = false;
+    private static long currentWindow = 0;
     
     public static void initializeImGuiForWindow(long window) {
         if (imGuiInitialized) return;
         
+        currentWindow = window;
+        
         // Set up ImGui callbacks that forward events to both ImGui and existing callbacks
-        glfwSetKeyCallback(window, ImGuiIntegration::keyCallback);
-        glfwSetMouseButtonCallback(window, ImGuiIntegration::mouseButtonCallback);
-        glfwSetScrollCallback(window, ImGuiIntegration::scrollCallback);
-        glfwSetCharCallback(window, ImGuiIntegration::charCallback);
-        glfwSetCursorPosCallback(window, ImGuiIntegration::cursorPosCallback);
+        setupCallbacks(window);
         
         imGuiInitialized = true;
     }
     
-    private static void keyCallback(long window, int key, int scancode, int action, int mods) {
-        // Forward to ImGui first
-        forwardToImGuiKeyCallback(window, key, scancode, action, mods);
+    private static void setupCallbacks(long window) {
+        // Store original callbacks
+        GLFWKeyCallback originalKeyCallback = mGLFWKeyCallback;
+        GLFWMouseButtonCallback originalMouseCallback = mGLFWMouseButtonCallback;
+        GLFWScrollCallback originalScrollCallback = mGLFWScrollCallback;
+        GLFWCharCallback originalCharCallback = mGLFWCharCallback;
+        GLFWCursorPosCallback originalCursorPosCallback = mGLFWCursorPosCallback;
         
-        // Then forward to existing GLFW callback
-        if (mGLFWKeyCallback != null) {
-            mGLFWKeyCallback.invoke(window, key, scancode, action, mods);
-        }
-    }
-    
-    private static void mouseButtonCallback(long window, int button, int action, int mods) {
-        // Forward to ImGui first
-        forwardToImGuiMouseButtonCallback(window, button, action, mods);
+        // Set new callbacks that forward to both ImGui and original callbacks
+        glfwSetKeyCallback(window, (win, key, scancode, action, mods) -> {
+            forwardToImGuiKeyCallback(win, key, scancode, action, mods);
+            if (originalKeyCallback != null) {
+                originalKeyCallback.invoke(win, key, scancode, action, mods);
+            }
+        });
         
-        // Then forward to existing GLFW callback
-        if (mGLFWMouseButtonCallback != null) {
-            mGLFWMouseButtonCallback.invoke(window, button, action, mods);
-        }
-    }
-    
-    private static void scrollCallback(long window, double xoffset, double yoffset) {
-        // Forward to ImGui first
-        forwardToImGuiScrollCallback(window, xoffset, yoffset);
+        glfwSetMouseButtonCallback(window, (win, button, action, mods) -> {
+            forwardToImGuiMouseButtonCallback(win, button, action, mods);
+            if (originalMouseCallback != null) {
+                originalMouseCallback.invoke(win, button, action, mods);
+            }
+        });
         
-        // Then forward to existing GLFW callback
-        if (mGLFWScrollCallback != null) {
-            mGLFWScrollCallback.invoke(window, xoffset, yoffset);
-        }
-    }
-    
-    private static void charCallback(long window, int codepoint) {
-        // Forward to ImGui first
-        forwardToImGuiCharCallback(window, codepoint);
+        glfwSetScrollCallback(window, (win, xoffset, yoffset) -> {
+            forwardToImGuiScrollCallback(win, xoffset, yoffset);
+            if (originalScrollCallback != null) {
+                originalScrollCallback.invoke(win, xoffset, yoffset);
+            }
+        });
         
-        // Then forward to existing GLFW callback
-        if (mGLFWCharCallback != null) {
-            mGLFWCharCallback.invoke(window, codepoint);
-        }
-    }
-    
-    private static void cursorPosCallback(long window, double xpos, double ypos) {
-        // Forward to ImGui first
-        forwardToImGuiCursorPosCallback(window, xpos, ypos);
+        glfwSetCharCallback(window, (win, codepoint) -> {
+            forwardToImGuiCharCallback(win, codepoint);
+            if (originalCharCallback != null) {
+                originalCharCallback.invoke(win, codepoint);
+            }
+        });
         
-        // Then forward to existing GLFW callback
-        if (mGLFWCursorPosCallback != null) {
-            mGLFWCursorPosCallback.invoke(window, xpos, ypos);
-        }
+        glfwSetCursorPosCallback(window, (win, xpos, ypos) -> {
+            forwardToImGuiCursorPosCallback(win, xpos, ypos);
+            if (originalCursorPosCallback != null) {
+                originalCursorPosCallback.invoke(win, xpos, ypos);
+            }
+        });
     }
     
     // Native methods that forward to ImGui implementation
@@ -77,9 +71,18 @@ public class ImGuiIntegration {
     private static native void forwardToImGuiCursorPosCallback(long window, double xpos, double ypos);
     
     public static void updateImGui() {
-        // This should be called every frame before ImGui rendering
-        updateImGuiFrame();
+        if (imGuiInitialized) {
+            updateImGuiFrame();
+        }
     }
     
     private static native void updateImGuiFrame();
-  }
+    
+    public static boolean isImGuiInitialized() {
+        return imGuiInitialized;
+    }
+    
+    public static long getCurrentWindow() {
+        return currentWindow;
+    }
+}
