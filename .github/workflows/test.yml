@@ -1,0 +1,21 @@
+name: ARM Build and Test
+
+on: [push]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04-arm64 # Or another appropriate ARM runner label
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up environment (e.g., install dependencies)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+
+      - name: Build project
+        run: make
+
+      - name: Run tests
+        run: make test
