@@ -1185,7 +1185,8 @@ public class GLFW
     }
 
     public static int glfwGetMouseButton(@NativeType("GLFWwindow *") long window, int button) {
-        return mouseDownBuffer.get(button);
+		PojavMouseBridge.handlePojavMouseEvent("mouse_button", window, 0, 0, button, action, mods, 0, 0);
+		return mouseDownBuffer.get(button);
     }
     public static void glfwGetCursorPos(@NativeType("GLFWwindow *") long window, @Nullable @NativeType("double *") DoubleBuffer xpos, @Nullable @NativeType("double *") DoubleBuffer ypos) {
         if (CHECKS) {
@@ -1193,6 +1194,7 @@ public class GLFW
             checkSafe(ypos, 1);
         }
         nglfwGetCursorPos(window, xpos, ypos);
+		PojavMouseBridge.handlePojavMouseEvent("mouse_move", window, xpos, ypos, 0, 0, 0, 0, 0);
     }
 
 
