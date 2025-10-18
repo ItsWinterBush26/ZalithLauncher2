@@ -495,6 +495,27 @@ public class GLFW
     /* volatile */ public static GLFWWindowPosCallback mGLFWWindowPosCallback;
     /* volatile */ public static GLFWWindowRefreshCallback mGLFWWindowRefreshCallback;
     /* volatile */ public static GLFWWindowSizeCallback mGLFWWindowSizeCallback;
+	public static volatile GLFWCursorPosCallback mGLFWCursorPosCallback;
+	public static volatile GLFWCursorEnterCallback mGLFWCursorEnterCallback;
+	public static volatile GLFWMouseButtonCallback mGLFWMouseButtonCallback;
+
+	public static GLFWCursorPosCallback glfwSetCursorPosCallback(long window, GLFWCursorPosCallback cbfun) {
+    GLFWCursorPosCallback previous = mGLFWCursorPosCallback;
+    mGLFWCursorPosCallback = cbfun;
+    return previous;
+}
+
+	public static GLFWCursorEnterCallback glfwSetCursorEnterCallback(long window, GLFWCursorEnterCallback cbfun) {
+    GLFWCursorEnterCallback previous = mGLFWCursorEnterCallback;
+    mGLFWCursorEnterCallback = cbfun;
+    return previous;
+}
+
+	public static GLFWMouseButtonCallback glfwSetMouseButtonCallback(long window, GLFWMouseButtonCallback cbfun) {
+    GLFWMouseButtonCallback previous = mGLFWMouseButtonCallback;
+    mGLFWMouseButtonCallback = cbfun;
+    return previous;
+}
 
     volatile public static int mGLFWWindowWidth, mGLFWWindowHeight;
 
